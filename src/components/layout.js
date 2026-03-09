@@ -1,5 +1,16 @@
 import * as React from "react"
 import { Link } from "gatsby"
+import { StaticImage } from "gatsby-plugin-image"
+
+const Logo = () => (
+  <StaticImage
+    src="../images/facturaporwhatsapp.png"
+    alt="Factura por WhatsApp"
+    height={120}
+    placeholder="none"
+    formats={["auto", "webp", "avif"]}
+  />
+)
 
 const Layout = ({ location, title, children }) => {
   const rootPath = `${__PATH_PREFIX__}/`
@@ -9,13 +20,13 @@ const Layout = ({ location, title, children }) => {
   if (isRootPath) {
     header = (
       <h1 className="main-heading">
-        <Link to="/">{title}</Link>
+        <Link to="/"><Logo /></Link>
       </h1>
     )
   } else {
     header = (
       <Link className="header-link-home" to="/">
-        {title}
+        <Logo />
       </Link>
     )
   }

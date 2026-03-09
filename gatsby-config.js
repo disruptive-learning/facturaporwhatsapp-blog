@@ -11,8 +11,8 @@ module.exports = {
   siteMetadata: {
     title: `Factura por WhatsApp`,
     author: {
-      name: `Gabriel Paredes`,
-      summary: `Flujos agénticos para WhatsApp.`,
+      name: '', // Update if we want a person's name instead of 'Factura por WhatsApp'
+      summary: '',
     },
     description: `Blog sobre facturación y flujos agénticos para WhatsApp.`,
     siteUrl: `https://blog.facturaporwhatsapp.com`,
@@ -139,7 +139,7 @@ module.exports = {
         // https://css-tricks.com/meta-theme-color-and-trickery/
         // theme_color: `#663399`,
         display: `minimal-ui`,
-        icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
+        icon: `src/images/icon-512x512.png`,
       },
     },
   ],

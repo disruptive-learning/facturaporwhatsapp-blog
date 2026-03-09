@@ -36,11 +36,11 @@ const Bio = () => {
         className="bio-avatar"
         layout="fixed"
         formats={["auto", "webp", "avif"]}
-        src="../images/profile-pic.png"
+        src="../images/icon-512x512.png"
         width={50}
         height={50}
         quality={95}
-        alt="Profile picture"
+        alt="Factura por WhatsApp"
       />
       <p>Escrito por el equipo detrás de Factura por WhatsApp.</p>
       {author?.name && (
