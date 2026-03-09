@@ -6,10 +6,15 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 
 const BlogPostTemplate = ({
-  data: { previous, next, site, markdownRemark: post },
+  data: { previous, next, previousMdx, nextMdx, site, markdownRemark, mdx },
   location,
+  children,
 }) => {
   const siteTitle = site.siteMetadata?.title || `Title`
+  const post = markdownRemark || mdx
+  const isMdx = !!mdx
+  const prev = previous || previousMdx
+  const nxt = next || nextMdx
 
   return (
     <Layout location={location} title={siteTitle}>
@@ -20,12 +25,32 @@ const BlogPostTemplate = ({
       >
         <header>
           <h1 itemProp="headline">{post.frontmatter.title}</h1>
-          <p>{post.frontmatter.date}</p>
+          {post.frontmatter.description && (
+            <p className="post-description">{post.frontmatter.description}</p>
+          )}
+          <div className="post-meta">
+            <small>{post.frontmatter.date}</small>
+            {post.frontmatter.author && (
+              <small> · {post.frontmatter.author}</small>
+            )}
+          </div>
+          {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
+            <div className="post-tags">
+              {post.frontmatter.tags.map(tag => (
+                <span key={tag} className="post-tag">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </header>
-        <section
-          dangerouslySetInnerHTML={{ __html: post.html }}
-          itemProp="articleBody"
-        />
+        <section itemProp="articleBody">
+          {isMdx ? (
+            children
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: post.html }} />
+          )}
+        </section>
         <hr />
         <footer>
           <Bio />
@@ -42,26 +67,30 @@ const BlogPostTemplate = ({
           }}
         >
           <li>
-            {previous && (
-              <Link to={previous.fields.slug} rel="prev">
-                ← {previous.frontmatter.title}
+            {prev && (
+              <Link to={prev.fields.slug} rel="prev">
+                ← {prev.frontmatter.title}
               </Link>
             )}
           </li>
           <li>
-            {next && (
-              <Link to={next.fields.slug} rel="next">
-                {next.frontmatter.title} →
+            {nxt && (
+              <Link to={nxt.fields.slug} rel="next">
+                {nxt.frontmatter.title} →
               </Link>
             )}
           </li>
         </ul>
       </nav>
+      <p className="back-to-blog">
+        <Link to="/">← Back to blog</Link>
+      </p>
     </Layout>
   )
 }
 
-export const Head = ({ data: { markdownRemark: post } }) => {
+export const Head = ({ data: { markdownRemark, mdx } }) => {
+  const post = markdownRemark || mdx
   return (
     <Seo
       title={post.frontmatter.title}
@@ -91,6 +120,19 @@ export const pageQuery = graphql`
         title
         date(formatString: "MMMM DD, YYYY")
         description
+        tags
+        author
+      }
+    }
+    mdx(id: { eq: $id }) {
+      id
+      excerpt(pruneLength: 160)
+      frontmatter {
+        title
+        date(formatString: "MMMM DD, YYYY")
+        description
+        tags
+        author
       }
     }
     previous: markdownRemark(id: { eq: $previousPostId }) {
@@ -102,6 +144,22 @@ export const pageQuery = graphql`
       }
     }
     next: markdownRemark(id: { eq: $nextPostId }) {
+      fields {
+        slug
+      }
+      frontmatter {
+        title
+      }
+    }
+    previousMdx: mdx(id: { eq: $previousPostId }) {
+      fields {
+        slug
+      }
+      frontmatter {
+        title
+      }
+    }
+    nextMdx: mdx(id: { eq: $nextPostId }) {
       fields {
         slug
       }

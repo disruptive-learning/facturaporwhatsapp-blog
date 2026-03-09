@@ -7,7 +7,33 @@ import Seo from "../components/seo"
 
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata?.title || `Title`
-  const posts = data.allMarkdownRemark.nodes
+  const isDevelopment = process.env.NODE_ENV === `development`
+
+  const mdxPosts = data.allMdx.nodes
+    .filter(p => isDevelopment || p.frontmatter.published !== false)
+    .map(p => ({
+      slug: p.frontmatter.slug || p.fields.slug,
+      title: p.frontmatter.title,
+      date: p.frontmatter.date,
+      sortDate: p.frontmatter.sortDate,
+      description: p.frontmatter.description,
+      excerpt: p.excerpt,
+    }))
+
+  const mdPosts = data.allMarkdownRemark.nodes
+    .filter(p => isDevelopment || p.frontmatter.published !== false)
+    .map(p => ({
+      slug: p.fields.slug,
+      title: p.frontmatter.title,
+      date: p.frontmatter.date,
+      sortDate: p.frontmatter.sortDate,
+      description: p.frontmatter.description,
+      excerpt: p.excerpt,
+    }))
+
+  const posts = [...mdxPosts, ...mdPosts].sort(
+    (a, b) => new Date(b.sortDate) - new Date(a.sortDate)
+  )
 
   if (posts.length === 0) {
     return (
@@ -27,10 +53,10 @@ const BlogIndex = ({ data, location }) => {
       <Bio />
       <ol style={{ listStyle: `none` }}>
         {posts.map(post => {
-          const title = post.frontmatter.title || post.fields.slug
+          const title = post.title || post.slug
 
           return (
-            <li key={post.fields.slug}>
+            <li key={post.slug}>
               <article
                 className="post-list-item"
                 itemScope
@@ -38,19 +64,16 @@ const BlogIndex = ({ data, location }) => {
               >
                 <header>
                   <h2>
-                    <Link to={post.fields.slug} itemProp="url">
+                    <Link to={post.slug} itemProp="url">
                       <span itemProp="headline">{title}</span>
                     </Link>
                   </h2>
-                  <small>{post.frontmatter.date}</small>
+                  <small>{post.date}</small>
                 </header>
                 <section>
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: post.frontmatter.description || post.excerpt,
-                    }}
-                    itemProp="description"
-                  />
+                  <p itemProp="description">
+                    {post.description || post.excerpt}
+                  </p>
                 </section>
               </article>
             </li>
@@ -63,11 +86,6 @@ const BlogIndex = ({ data, location }) => {
 
 export default BlogIndex
 
-/**
- * Head export to define metadata for the page
- *
- * See: https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-head/
- */
 export const Head = () => <Seo title="All posts" />
 
 export const pageQuery = graphql`
@@ -75,6 +93,22 @@ export const pageQuery = graphql`
     site {
       siteMetadata {
         title
+      }
+    }
+    allMdx(sort: { frontmatter: { date: DESC } }) {
+      nodes {
+        excerpt
+        fields {
+          slug
+        }
+        frontmatter {
+          date(formatString: "MMMM DD, YYYY")
+          sortDate: date
+          title
+          description
+          published
+          slug
+        }
       }
     }
     allMarkdownRemark(sort: { frontmatter: { date: DESC } }) {
@@ -85,8 +119,10 @@ export const pageQuery = graphql`
         }
         frontmatter {
           date(formatString: "MMMM DD, YYYY")
+          sortDate: date
           title
           description
+          published
         }
       }
     }

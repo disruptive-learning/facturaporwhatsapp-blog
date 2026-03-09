@@ -317,6 +317,41 @@ a:focus {
   margin-bottom: var(--spacing-8);
 }
 
+.post-description {
+  font-size: var(--fontSize-2);
+  color: var(--color-text-light);
+  font-family: var(--font-heading);
+  margin-top: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.post-meta {
+  margin-bottom: var(--spacing-4);
+  color: var(--color-text-light);
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-6);
+}
+
+.post-tag {
+  background-color: var(--color-accent);
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: var(--fontSize-0);
+  font-weight: var(--fontWeight-bold);
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: 9999px;
+  text-transform: lowercase;
+}
+
+.back-to-blog {
+  margin-top: var(--spacing-8);
+}
+
 /* Media queries */
 
 @media (max-width: 42rem) {
