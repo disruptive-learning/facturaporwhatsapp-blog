@@ -9,31 +9,15 @@ const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata?.title || `Title`
   const isDevelopment = process.env.NODE_ENV === `development`
 
-  const mdxPosts = data.allMdx.nodes
+  const posts = data.allMdx.nodes
     .filter(p => isDevelopment || p.frontmatter.published !== false)
     .map(p => ({
       slug: p.frontmatter.slug || p.fields.slug,
       title: p.frontmatter.title,
       date: p.frontmatter.date,
-      sortDate: p.frontmatter.sortDate,
       description: p.frontmatter.description,
       excerpt: p.excerpt,
     }))
-
-  const mdPosts = data.allMarkdownRemark.nodes
-    .filter(p => isDevelopment || p.frontmatter.published !== false)
-    .map(p => ({
-      slug: p.fields.slug,
-      title: p.frontmatter.title,
-      date: p.frontmatter.date,
-      sortDate: p.frontmatter.sortDate,
-      description: p.frontmatter.description,
-      excerpt: p.excerpt,
-    }))
-
-  const posts = [...mdxPosts, ...mdPosts].sort(
-    (a, b) => new Date(b.sortDate) - new Date(a.sortDate)
-  )
 
   if (posts.length === 0) {
     return (
@@ -103,26 +87,10 @@ export const pageQuery = graphql`
         }
         frontmatter {
           date(formatString: "MMMM DD, YYYY")
-          sortDate: date
           title
           description
           published
           slug
-        }
-      }
-    }
-    allMarkdownRemark(sort: { frontmatter: { date: DESC } }) {
-      nodes {
-        excerpt
-        fields {
-          slug
-        }
-        frontmatter {
-          date(formatString: "MMMM DD, YYYY")
-          sortDate: date
-          title
-          description
-          published
         }
       }
     }

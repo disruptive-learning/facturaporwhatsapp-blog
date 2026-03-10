@@ -6,15 +6,14 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 
 const BlogPostTemplate = ({
-  data: { previous, next, previousMdx, nextMdx, site, markdownRemark, mdx },
+  data: { previousMdx, nextMdx, site, mdx },
   location,
   children,
 }) => {
   const siteTitle = site.siteMetadata?.title || `Title`
-  const post = markdownRemark || mdx
-  const isMdx = !!mdx
-  const prev = previous || previousMdx
-  const nxt = next || nextMdx
+  const post = mdx
+  const prev = previousMdx
+  const nxt = nextMdx
 
   return (
     <Layout location={location} title={siteTitle}>
@@ -45,11 +44,7 @@ const BlogPostTemplate = ({
           )}
         </header>
         <section itemProp="articleBody">
-          {isMdx ? (
-            children
-          ) : (
-            <div dangerouslySetInnerHTML={{ __html: post.html }} />
-          )}
+          {children}
         </section>
         <hr />
         <footer>
@@ -89,8 +84,8 @@ const BlogPostTemplate = ({
   )
 }
 
-export const Head = ({ data: { markdownRemark, mdx } }) => {
-  const post = markdownRemark || mdx
+export const Head = ({ data: { mdx } }) => {
+  const post = mdx
   return (
     <Seo
       title={post.frontmatter.title}
@@ -112,18 +107,6 @@ export const pageQuery = graphql`
         title
       }
     }
-    markdownRemark(id: { eq: $id }) {
-      id
-      excerpt(pruneLength: 160)
-      html
-      frontmatter {
-        title
-        date(formatString: "MMMM DD, YYYY")
-        description
-        tags
-        author
-      }
-    }
     mdx(id: { eq: $id }) {
       id
       excerpt(pruneLength: 160)
@@ -133,22 +116,6 @@ export const pageQuery = graphql`
         description
         tags
         author
-      }
-    }
-    previous: markdownRemark(id: { eq: $previousPostId }) {
-      fields {
-        slug
-      }
-      frontmatter {
-        title
-      }
-    }
-    next: markdownRemark(id: { eq: $nextPostId }) {
-      fields {
-        slug
-      }
-      frontmatter {
-        title
       }
     }
     previousMdx: mdx(id: { eq: $previousPostId }) {

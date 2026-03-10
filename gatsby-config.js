@@ -7,6 +7,9 @@
 /**
  * @type {import('gatsby').GatsbyConfig}
  */
+
+const remarkGfm = require('remark-gfm').default
+
 module.exports = {
   siteMetadata: {
     title: `Factura por WhatsApp`,
@@ -40,27 +43,10 @@ module.exports = {
       resolve: `gatsby-plugin-mdx`,
       options: {
         extensions: [`.mdx`],
+        mdxOptions: {
+          remarkPlugins: [remarkGfm],
+        },
         gatsbyRemarkPlugins: [
-          {
-            resolve: `gatsby-remark-images`,
-            options: {
-              maxWidth: 630,
-            },
-          },
-          {
-            resolve: `gatsby-remark-responsive-iframe`,
-            options: {
-              wrapperStyle: `margin-bottom: 1.0725rem`,
-            },
-          },
-          `gatsby-remark-prismjs`,
-        ],
-      },
-    },
-    {
-      resolve: `gatsby-transformer-remark`,
-      options: {
-        plugins: [
           {
             resolve: `gatsby-remark-images`,
             options: {
@@ -96,22 +82,20 @@ module.exports = {
         `,
         feeds: [
           {
-            serialize: ({ query: { site, allMarkdownRemark } }) => {
-              return allMarkdownRemark.nodes.map(node => {
+            serialize: ({ query: { site, allMdx } }) => {
+              return allMdx.nodes.map(node => {
                 return Object.assign({}, node.frontmatter, {
                   description: node.excerpt,
                   date: node.frontmatter.date,
                   url: site.siteMetadata.siteUrl + node.fields.slug,
                   guid: site.siteMetadata.siteUrl + node.fields.slug,
-                  custom_elements: [{ "content:encoded": node.html }],
                 })
               })
             },
             query: `{
-              allMarkdownRemark(sort: {frontmatter: {date: DESC}}) {
+              allMdx(sort: {frontmatter: {date: DESC}}) {
                 nodes {
                   excerpt
-                  html
                   fields {
                     slug
                   }
@@ -123,7 +107,7 @@ module.exports = {
               }
             }`,
             output: "/rss.xml",
-            title: "Gatsby Starter Blog RSS Feed",
+            title: "Factura por WhatsApp Blog RSS Feed",
           },
         ],
       },
