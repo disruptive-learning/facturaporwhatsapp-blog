@@ -46,4 +46,21 @@ Posts are a content collection defined in `src/content.config.ts` and sourced fr
 
 ## Deployment
 
-Netlify builds with `bun run build` and publishes `dist/` (see `netlify.toml`).
+Firebase Hosting, deployed by Cloud Build on merge to `master`.
+
+A push to `master` fires the Cloud Build trigger, which runs `bun install
+--frozen-lockfile`, `bun run build`, then `firebase deploy --only=hosting`.
+Auth rides on the build service account -- there is no deploy token to rotate.
+
+- `cloudbuild.yaml` — the three build steps
+- `firebase.json` — hosting site, `dist/` as the public dir, and cache headers
+  (content-hashed `/_astro/` assets are immutable for a year; HTML always revalidates).
+  Firebase applies the **last** matching header rule, so the broad `**` rule comes
+  first and the specific ones override it.
+
+To deploy by hand from a clean checkout:
+
+```shell
+bun install && bun run build
+firebase deploy --only=hosting --project=factura-por-whatsapp
+```

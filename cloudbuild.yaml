@@ -1,0 +1,39 @@
+# Deploys the blog to Firebase Hosting (site: factura-por-whatsapp) on merge to master.
+#
+# Trigger: Cloud Build > Triggers > push to branch ^master$ > this file.
+# Auth rides on the build service account -- no FIREBASE_TOKEN, no key file.
+# The build SA needs: Cloud Build Service Account, Firebase Admin, API Keys Viewer.
+
+steps:
+  # oven/bun ships no ENTRYPOINT, so `entrypoint` is required -- without it
+  # Cloud Build resolves args[0] against PATH and finds GNU coreutils `install`.
+  - id: install
+    name: oven/bun:1
+    entrypoint: bun
+    args: ['install', '--frozen-lockfile']
+
+  # oven/bun ships no node either, so `astro build` runs on Bun's runtime via
+  # the node shebang. Verified to produce byte-identical output, sharp included.
+  - id: build
+    name: oven/bun:1
+    entrypoint: bun
+    args: ['run', 'build']
+
+  # Official Firebase builder. `--only=hosting` plus the `site` key in
+  # firebase.json keeps this deploy scoped to factura-por-whatsapp and unable
+  # to touch any other hosting site in the project.
+  - id: deploy
+    name: us-docker.pkg.dev/firebase-cli/us/firebase
+    args:
+      [
+        'deploy',
+        '--only=hosting',
+        '--project=factura-por-whatsapp',
+        '--non-interactive',
+      ]
+
+# No timeout override: the whole pipeline is well under the 10m default --
+# the Astro build itself is ~1s and there are only two images to optimize.
+
+options:
+  logging: CLOUD_LOGGING_ONLY
