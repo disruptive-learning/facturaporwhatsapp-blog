@@ -1,46 +1,49 @@
 # Factura por WhatsApp — Blog
 
-A Gatsby 5 blog with MDX support for the Factura por WhatsApp project.
+An Astro 7 blog with MDX support for the Factura por WhatsApp project.
 
 ## Development
 
-```shell
-gatsby develop   # Start dev server at http://localhost:8000
-gatsby build     # Production build
-gatsby clean     # Clear cache if you hit stale data issues
-```
+Requires Node 22.12 or newer (see `.nvmrc`) and [bun](https://bun.sh).
 
-The GraphQL explorer is available at `http://localhost:8000/___graphql` during development.
+```shell
+bun install
+bun run develop   # Start dev server at http://localhost:4321
+bun run build     # Production build into dist/
+bun run serve     # Preview the production build
+bun run clean     # Remove dist/ and .astro/
+```
 
 ## Creating a new blog post
 
 1. Copy `content/blog/_template.mdx` to a new directory under `content/blog/`:
 
    ```shell
-   cp -r content/blog/_template.mdx content/blog/my-new-post/index.mdx
+   cp content/blog/_template.mdx content/blog/my-new-post/index.mdx
    ```
 
-2. Fill in the frontmatter fields. `title`, `date`, and `description` are required. All other fields are optional.
+2. Fill in the frontmatter fields. `title`, `date` and `description` are required and are
+   validated at build time. All other fields are optional.
 
-3. Write your content below the `---` closing delimiter. The file is MDX, so you can use React components inline alongside standard Markdown.
+3. Write your content below the `---` closing delimiter. The file is MDX, so you can use
+   components inline alongside standard Markdown (GitHub-Flavored Markdown, including
+   tables, is supported out of the box).
 
 ### The `published` flag
 
 - `published: true` (default) — post appears in development and production.
-- `published: false` — post is **hidden in production builds** but still rendered during `gatsby develop`, so you can preview drafts locally before pushing.
+- `published: false` — post is **hidden in production builds** but still rendered during
+  `bun run develop`, so you can preview drafts locally before pushing.
 
-### Frontmatter reference
+## Stack
 
-| Field         | Required | Description |
-|---------------|----------|-------------|
-| `title`       | yes      | Post title shown in the header and listing |
-| `date`        | yes      | ISO 8601 date, e.g. `"2026-03-09T10:00:00.000Z"` |
-| `description` | yes      | Short summary used as the SEO meta description and post subtitle |
-| `slug`        | no       | Custom URL path. If omitted, derived from the directory name |
-| `tags`        | no       | Array of strings shown as tag pills, e.g. `["whatsapp", "facturación"]` |
-| `author`      | no       | Overrides the default site author from `gatsby-config.js` |
-| `published`   | no       | Boolean, defaults to `true`. Set to `false` to keep a post as a draft |
+- [Astro](https://astro.build) — static site generation, no client-side JavaScript
+- [`@astrojs/mdx`](https://docs.astro.build/en/guides/integrations-guide/mdx/) — MDX posts
+- [`@astrojs/rss`](https://docs.astro.build/en/guides/rss/) — feed at `/rss.xml`
 
-## Deploying
+Posts are a content collection defined in `src/content.config.ts` and sourced from
+`content/blog/`. Site identity (title, description, URL, author) lives in `src/consts.js`.
 
-Pushing to `master` triggers a production deploy. Draft posts (`published: false`) are automatically excluded from the production build.
+## Deployment
+
+Netlify builds with `bun run build` and publishes `dist/` (see `netlify.toml`).

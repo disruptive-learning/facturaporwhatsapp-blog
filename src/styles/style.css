@@ -510,8 +510,9 @@ body::before {
 
 /* ─── Code ────────────────────────────────────────────────────── */
 
-.gatsby-highlight {
+pre.astro-code {
   margin-bottom: var(--spacing-8);
+  padding: var(--spacing-4);
   border: 3px solid var(--color-black);
   box-shadow: var(--shadow-sm);
 }

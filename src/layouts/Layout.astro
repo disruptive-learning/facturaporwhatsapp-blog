@@ -1,0 +1,44 @@
+---
+import { Image } from "astro:assets"
+
+import BaseHead from "../components/BaseHead.astro"
+import logo from "../images/facturaporwhatsapp.png"
+import "../styles/normalize.css"
+import "../styles/style.css"
+
+const { title, description } = Astro.props
+
+const isRootPath = Astro.url.pathname === "/"
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body>
+    <div class="global-wrapper" data-is-root-path={String(isRootPath)}>
+      <header class="global-header">
+        {
+          isRootPath ? (
+            <h1 class="main-heading">
+              <a href="/">
+                <Image src={logo} height={120} alt="Factura por WhatsApp" />
+              </a>
+            </h1>
+          ) : (
+            <a class="header-link-home" href="/">
+              <Image src={logo} height={120} alt="Factura por WhatsApp" />
+            </a>
+          )
+        }
+      </header>
+      <main>
+        <slot />
+      </main>
+      <footer>
+        © {new Date().getFullYear()} Todos los derechos reservados.
+      </footer>
+    </div>
+  </body>
+</html>

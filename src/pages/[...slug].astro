@@ -1,0 +1,81 @@
+---
+import { render } from "astro:content"
+
+import Bio from "../components/Bio.astro"
+import Layout from "../layouts/Layout.astro"
+import { formatDate, getPosts, postPath } from "../lib/posts.js"
+
+export async function getStaticPaths() {
+  // Oldest first, so `previous` is the older post and `next` the newer one.
+  const posts = (await getPosts()).reverse()
+
+  return posts.map((post, index) => ({
+    params: { slug: postPath(post).replace(/^\/|\/$/g, "") },
+    props: {
+      post,
+      previous: index === 0 ? null : posts[index - 1],
+      next: index === posts.length - 1 ? null : posts[index + 1],
+    },
+  }))
+}
+
+const { post, previous, next } = Astro.props
+const { title, description, date, author, tags } = post.data
+const { Content } = await render(post)
+---
+
+<Layout title={title} description={description}>
+  <article class="blog-post" itemscope itemtype="http://schema.org/Article">
+    <header>
+      <h1 itemprop="headline">{title}</h1>
+      {description && <p class="post-description">{description}</p>}
+      <div class="post-meta">
+        <small>{formatDate(date)}</small>
+        {author && <small> · {author}</small>}
+      </div>
+      {
+        tags && tags.length > 0 && (
+          <div class="post-tags">
+            {tags.map(tag => (
+              <span class="post-tag">{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+    <section itemprop="articleBody">
+      <Content />
+    </section>
+    <hr />
+    <footer>
+      <Bio />
+    </footer>
+  </article>
+  <nav class="blog-post-nav">
+    <ul
+      style="display: flex; flex-wrap: wrap; justify-content: space-between; list-style: none; padding: 0"
+    >
+      <li>
+        {
+          previous && (
+            <a href={postPath(previous)} rel="prev">
+              ← {previous.data.title}
+            </a>
+          )
+        }
+      </li>
+      <li>
+        {
+          next && (
+            <a href={postPath(next)} rel="next">
+              {next.data.title} →
+            </a>
+          )
+        }
+      </li>
+    </ul>
+  </nav>
+  <p class="back-to-blog">
+    <a href="/">← Back to blog</a>
+  </p>
+</Layout>

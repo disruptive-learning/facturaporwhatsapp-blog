@@ -1,0 +1,47 @@
+---
+import Bio from "../components/Bio.astro"
+import Layout from "../layouts/Layout.astro"
+import { excerpt, formatDate, getPosts, postPath } from "../lib/posts.js"
+
+const posts = await getPosts()
+---
+
+<Layout title="All posts">
+  <Bio />
+  {
+    posts.length === 0 ? (
+      <p>
+        No blog posts found. Add MDX posts to "content/blog" (or the directory
+        you specified for the "blog" collection in src/content.config.ts).
+      </p>
+    ) : (
+      <ol style="list-style: none">
+        {posts.map(post => (
+          <li>
+            <article
+              class="post-list-item"
+              itemscope
+              itemtype="http://schema.org/Article"
+            >
+              <header>
+                <h2>
+                  <a href={postPath(post)} itemprop="url">
+                    <span itemprop="headline">
+                      {post.data.title || postPath(post)}
+                    </span>
+                  </a>
+                </h2>
+                <small>{formatDate(post.data.date)}</small>
+              </header>
+              <section>
+                <p itemprop="description">
+                  {post.data.description || excerpt(post.body)}
+                </p>
+              </section>
+            </article>
+          </li>
+        ))}
+      </ol>
+    )
+  }
+</Layout>

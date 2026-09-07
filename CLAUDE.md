@@ -14,14 +14,14 @@ Una herramienta que permite generar facturas fiscales válidas ante el SAT direc
 
 ### Público Objetivo
 
-| Segmento | Pain Points | Cómo les ayuda Factura por WA |
-|----------|-------------|-------------------------------|
-| **Doctores y profesionales de salud** | Pacientes piden factura después de consulta, interrumpe el flujo de trabajo, no tienen tiempo para sistemas complejos | Facturan desde el celular entre consultas, sin abrir computadora |
-| **Freelancers** | Clientes piden factura a última hora, olvidan datos fiscales, proceso manual tedioso | Envían datos por WhatsApp y listo, sin aprender nuevo software |
-| **Emprendedores pequeños** | No tienen contador de planta, sistemas de facturación son caros o complicados, pierden tiempo en administración | Solución económica y simple, se enfocan en vender, no en papelería |
-| **Consultores independientes** | Facturan a múltiples clientes con diferentes datos fiscales, necesitan agilidad | Guardan datos de clientes frecuentes, facturan en segundos |
-| **Terapeutas y coaches** | Sesiones seguidas, no pueden pausar para facturar, clientes esperan factura inmediata | Facturan entre sesiones desde WhatsApp |
-| **Profesionistas (abogados, contadores, arquitectos)** | Ya tienen suficiente trabajo administrativo, facturar es una carga más | Eliminan fricción, delegan la complejidad técnica |
+| Segmento                                               | Pain Points                                                                                                           | Cómo les ayuda Factura por WA                                      |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **Doctores y profesionales de salud**                  | Pacientes piden factura después de consulta, interrumpe el flujo de trabajo, no tienen tiempo para sistemas complejos | Facturan desde el celular entre consultas, sin abrir computadora   |
+| **Freelancers**                                        | Clientes piden factura a última hora, olvidan datos fiscales, proceso manual tedioso                                  | Envían datos por WhatsApp y listo, sin aprender nuevo software     |
+| **Emprendedores pequeños**                             | No tienen contador de planta, sistemas de facturación son caros o complicados, pierden tiempo en administración       | Solución económica y simple, se enfocan en vender, no en papelería |
+| **Consultores independientes**                         | Facturan a múltiples clientes con diferentes datos fiscales, necesitan agilidad                                       | Guardan datos de clientes frecuentes, facturan en segundos         |
+| **Terapeutas y coaches**                               | Sesiones seguidas, no pueden pausar para facturar, clientes esperan factura inmediata                                 | Facturan entre sesiones desde WhatsApp                             |
+| **Profesionistas (abogados, contadores, arquitectos)** | Ya tienen suficiente trabajo administrativo, facturar es una carga más                                                | Eliminan fricción, delegan la complejidad técnica                  |
 
 ### Propuesta de Valor
 
@@ -43,12 +43,14 @@ Una herramienta que permite generar facturas fiscales válidas ante el SAT direc
 ### Keywords Principales
 
 **Transaccionales:**
+
 - facturar por whatsapp
 - factura automática whatsapp
 - generar cfdi whatsapp
 - facturación móvil méxico
 
 **Informacionales:**
+
 - cómo facturar como freelancer
 - requisitos factura electrónica méxico
 - qué es un cfdi
@@ -56,6 +58,7 @@ Una herramienta que permite generar facturas fiscales válidas ante el SAT direc
 - obligaciones fiscales freelancer méxico
 
 **Por segmento:**
+
 - facturación para doctores
 - facturación para freelancers
 - facturación para emprendedores
@@ -65,21 +68,25 @@ Una herramienta que permite generar facturas fiscales válidas ante el SAT direc
 ### Temas de Blog Sugeridos
 
 **Para Doctores:**
+
 - "Cómo facturar consultas médicas sin perder tiempo entre pacientes"
 - "Obligaciones fiscales para médicos independientes en 2026"
 - "Facturación para consultorios: guía completa"
 
 **Para Freelancers:**
+
 - "Guía de facturación para freelancers en México"
 - "Cómo cobrar y facturar a clientes extranjeros"
 - "Errores comunes al facturar como independiente"
 
 **Para Emprendedores:**
+
 - "Cuándo y cómo empezar a facturar en tu negocio"
 - "Diferencias entre factura, recibo y nota de venta"
 - "Cómo elegir tu régimen fiscal como emprendedor"
 
 **Educativos (SEO/GEO):**
+
 - "¿Qué es el CFDI y por qué lo necesitas?"
 - "Guía del SAT para principiantes"
 - "Deducciones fiscales que no conocías"
@@ -89,51 +96,69 @@ Una herramienta que permite generar facturas fiscales válidas ante el SAT direc
 ## Commands
 
 ```bash
-bun run develop    # Start dev server at localhost:8000
+bun run develop    # Start dev server at localhost:4321
 bun run build      # Production build
-bun run serve      # Serve production build locally
-bun run clean      # Clear Gatsby cache (.cache and public/)
+bun run serve      # Serve the production build locally (astro preview)
+bun run clean      # Remove build output (dist/ and .astro/)
 bun run format     # Format with Prettier
 ```
 
-No test suite is configured (the `test` script is a placeholder). Use bun (not npm) as the package manager.
+No test suite is configured. Use bun (not npm) as the package manager, and Node 22.12+
+(see `.nvmrc`) — Astro 7 requires it.
 
 ## Architecture
 
-This is a **Gatsby 5 blog** with MDX support. `.mdx` is the preferred format for new posts; `.md` files continue to work for backwards compatibility with the starter's sample posts.
+This is an **Astro 7 blog** with MDX support, built on three dependencies: `astro`,
+`@astrojs/mdx` and `@astrojs/rss`. Posts are `.mdx` files and may use JSX components inline.
+There is no React in the project: `.astro` components render to static HTML with zero
+client-side JavaScript.
 
 ### Content Flow
 
-1. Content files in `content/blog/<post-slug>/index.mdx` (or `.md`) are sourced via `gatsby-source-filesystem`
-2. `.mdx` files → `gatsby-plugin-mdx` → `allMdx` GraphQL nodes
-3. `.md` files → `gatsby-transformer-remark` → `allMarkdownRemark` GraphQL nodes
-4. `gatsby-node.js` queries both node types, filters out `published: false` posts in production, and creates a page per post using `src/templates/blog-post.js`
-5. MDX pages use the `?__contentFilePath=` suffix on the component path so MDX content is injected as `children` into the template
-6. Slugs are derived from frontmatter `slug` field first, then fall back to the file path
+1. Posts live in `content/blog/<post-slug>/index.mdx`, outside `src/`
+2. `src/content.config.ts` defines the `blog` collection: Astro's `glob()` loader picks up
+   `**/[^_]*.mdx` from `./content/blog` (the `[^_]` prefix keeps `_template.mdx` out) and
+   validates frontmatter against a Zod schema
+3. `src/pages/[...slug].astro` calls `getStaticPaths()` to emit one page per post, and
+   `render(post)` to turn MDX into a `<Content />` component
+4. `src/lib/posts.js` centralizes the shared rules: draft filtering, date sorting, URL
+   building, date formatting and excerpts
+5. Markdown is rendered by Sätteri, Astro's native pipeline — GitHub-Flavored Markdown
+   (including tables), SmartyPants smart quotes and syntax highlighting are built in
+6. Slugs come from the frontmatter `slug` field first, then fall back to the file path
 
 ### Frontmatter Schema
 
 ```md
 ---
-title: Post Title          # required
-date: "2026-01-01T00:00:00.000Z"  # required, ISO 8601
-description: "..."         # required, used for SEO
-slug: ""                   # optional, overrides path-derived slug
-tags: []                   # optional, rendered as pill chips
-author: ""                 # optional, defaults to siteMetadata.author.name
-published: true            # optional, false hides post from production builds
+title: Post Title # required
+date: "2026-01-01T00:00:00.000Z" # required, ISO 8601
+description: "..." # required, used for SEO
+slug: "" # optional, overrides path-derived slug
+tags: [] # optional, rendered as pill chips
+author: "" # optional, defaults to SITE.author.name
+published: true # optional, false hides post from production builds
 ---
 ```
 
+Frontmatter is validated at build time — a missing `title`, `date` or `description` fails
+the build with the offending file named.
+
 ### Key Files
 
-- `gatsby-config.js` — site metadata (title, author, siteUrl), plugin config; update `siteMetadata` here for site identity
-- `gatsby-node.js` — page creation for both MDX and MD, slug generation, GraphQL schema customization
-- `src/pages/index.js` — blog listing page; merges MDX + MD post lists, sorts by date, filters drafts
-- `src/templates/blog-post.js` — single post template; renders `{children}` for MDX, `dangerouslySetInnerHTML` for MD; displays title, description, date, author, tag pills, prev/next nav, "Back to blog" link
-- `src/components/bio.js` — author bio (reads from `siteMetadata.author`)
-- `src/components/layout.js` — site wrapper with header/footer
-- `src/style.css` — global styles including `.post-tag`, `.post-description`, `.post-meta` classes
+- `src/consts.js` — site metadata (title, description, siteUrl, author, social); update this for site identity
+- `astro.config.mjs` — Astro config: `site` URL and the MDX integration
+- `src/content.config.ts` — the `blog` collection: glob loader + frontmatter schema
+- `src/lib/posts.js` — `getPosts()` (draft filtering + sort), `postPath()`, `formatDate()`, `excerpt()`
+- `src/pages/index.astro` — blog listing page, newest first
+- `src/pages/[...slug].astro` — single post page; title, description, date, author, tag pills, prev/next nav, "Back to blog" link
+- `src/pages/rss.xml.js` — RSS feed at `/rss.xml`
+- `src/pages/404.astro` — not-found page
+- `src/layouts/Layout.astro` — site wrapper with header/footer, loads global CSS
+- `src/components/BaseHead.astro` — `<title>`, meta description, Open Graph and Twitter tags
+- `src/components/Bio.astro` — author bio (reads from `src/consts.js`)
+- `src/styles/style.css` — global styles including `.post-tag`, `.post-description`, `.post-meta` classes
+- `public/` — files served as-is at the site root (`favicon.ico`, `robots.txt`)
 - `content/blog/_template.mdx` — copy this when creating new posts
 
 ### Adding a New Blog Post
@@ -142,7 +167,7 @@ published: true            # optional, false hides post from production builds
 cp content/blog/_template.mdx content/blog/my-post-slug/index.mdx
 ```
 
-Fill in frontmatter, write content. Posts with `published: false` are visible in dev but excluded from production builds.
+Fill in frontmatter, write content. Posts with `published: false` are visible in `bun run develop` but excluded from production builds.
 
 ---
 
@@ -211,12 +236,16 @@ Cada post debe seguir esta estructura en orden (los motores de IA son "top-heavy
 
 ```markdown
 # H1: Título del Post (solo uno)
+
 ## H2: Secciones Principales
+
 ### H3: Subsecciones
+
 #### H4: Detalles específicos (usar con moderación)
 ```
 
 **Reglas:**
+
 - Un solo H1 que define el intent de la página
 - H2s para temas principales
 - H3s para dividir H2s en partes digeribles
@@ -227,6 +256,7 @@ Cada post debe seguir esta estructura en orden (los motores de IA son "top-heavy
 ### Optimización para AI/Featured Snippets
 
 **Formato de respuestas:**
+
 - Bullets y listas numeradas
 - Párrafos cortos (2-4 oraciones)
 - Respuestas concisas de 40-60 palabras para voice search
@@ -234,6 +264,7 @@ Cada post debe seguir esta estructura en orden (los motores de IA son "top-heavy
 
 **Fan-out queries:**
 Los motores de IA dividen preguntas complejas en sub-queries. Asegurarse de:
+
 - Tener contenido que rankee para sub-queries cortas
 - Usar la misma terminología que buscaría la IA
 
@@ -248,6 +279,7 @@ Cada post DEBE incluir:
 5. **Author con credenciales** - Nombre, rol, links a perfiles profesionales
 
 **Impacto medido:**
+
 - Sitios con author schema son **3x más probables** de aparecer en respuestas de IA
 - Sitios con FAQ schema vieron **44% más citas** en AI search
 - Páginas con schema markup son **36% más probables** de aparecer en respuestas de IA
@@ -256,16 +288,16 @@ Cada post DEBE incluir:
 
 ```yaml
 ---
-title: "Título SEO Optimizado"           # required, 30-65 chars
-date: "2026-01-01T00:00:00.000Z"         # required, ISO 8601
-description: "Meta description clara"    # required, 150-160 chars
-slug: "url-amigable"                     # optional
-tags: ["tag1", "tag2"]                   # optional, 3-5 tags relevantes
-author: "Nombre Completo"                # required for EEAT
-authorRole: "Rol/Título Profesional"     # recommended
-authorLinkedIn: "url"                    # recommended
-published: true                          # optional
-lastUpdated: "2026-01-15"                # recommended (recency bias)
+title: "Título SEO Optimizado" # required, 30-65 chars
+date: "2026-01-01T00:00:00.000Z" # required, ISO 8601
+description: "Meta description clara" # required, 150-160 chars
+slug: "url-amigable" # optional
+tags: ["tag1", "tag2"] # optional, 3-5 tags relevantes
+author: "Nombre Completo" # required for EEAT
+authorRole: "Rol/Título Profesional" # recommended
+authorLinkedIn: "url" # recommended
+published: true # optional
+lastUpdated: "2026-01-15" # recommended (recency bias)
 ---
 ```
 
@@ -274,6 +306,7 @@ lastUpdated: "2026-01-15"                # recommended (recency bias)
 Implementar en cada post:
 
 **BlogPosting Schema:**
+
 ```json
 {
   "@context": "https://schema.org",
@@ -290,6 +323,7 @@ Implementar en cada post:
 ```
 
 **FAQPage Schema (anidado en BlogPosting):**
+
 ```json
 {
   "@type": "FAQPage",

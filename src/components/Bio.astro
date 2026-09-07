@@ -1,0 +1,27 @@
+---
+import { Image } from "astro:assets"
+
+import { SITE } from "../consts.js"
+import avatar from "../images/icon-512x512.png"
+
+const { author } = SITE
+---
+
+<div class="bio">
+  <Image
+    class="bio-avatar"
+    src={avatar}
+    width={50}
+    height={50}
+    quality={95}
+    alt="Factura por WhatsApp"
+  />
+  <p>Escrito por el equipo detrás de Factura por WhatsApp.</p>
+  {
+    author.name && (
+      <p>
+        <strong>{author.name}</strong> {author.summary || null}
+      </p>
+    )
+  }
+</div>
