@@ -58,6 +58,9 @@ typings/
 dist/
 .astro/
 
+# firebase deploy cache
+.firebase/
+
 # Mac files
 .DS_Store
 
