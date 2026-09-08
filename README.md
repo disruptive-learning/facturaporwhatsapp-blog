@@ -1,3 +1,30 @@
+> # ⚠️ Deprecated — moved to `disruptive-learning/blogs`
+>
+> This repository is **archived and read-only**. The Factura por WhatsApp blog now
+> lives in the blogs monorepo, alongside the other company blog surfaces:
+>
+> **→ [`disruptive-learning/blogs`](https://github.com/disruptive-learning/blogs) → [`apps/facturaporwhatsapp-blog/`](https://github.com/disruptive-learning/blogs/tree/main/apps/facturaporwhatsapp-blog)**
+>
+> - `blog.facturaporwhatsapp.com` is served from the monorepo. Nothing here deploys
+>   any more. This repo never had a Cloud Build trigger of its own — the blog was
+>   being deployed by hand — so the monorepo is its first real pipeline.
+> - Everything moved intact: all 5 posts, the template, the design tokens and the
+>   Firebase cache-header rules.
+> - The monorepo adds a design guide (`DESIGN.md`, written from `style.css` since
+>   nothing described the visual system in prose) and an editorial style guide
+>   (`STYLE-GUIDE.md`, carrying the SEO/GEO rules that used to live in `CLAUDE.md`).
+> - **To publish a post**, branch off `main` in the monorepo and add it under
+>   `apps/facturaporwhatsapp-blog/content/blog/`. See the monorepo's
+>   [`STYLE-GUIDE.md`](https://github.com/disruptive-learning/blogs/blob/main/apps/facturaporwhatsapp-blog/STYLE-GUIDE.md).
+>
+> **A note on this repo's history:** the Gatsby 5 → Astro 7 migration and the move
+> off Netlify were developed on the `migrate-to-astro` branch and were never merged
+> into `master` before the move. `master` has been fast-forwarded to that branch tip
+> so this archive reflects the project's actual final state. The documentation below
+> is preserved as it was on the day of the move and is **no longer maintained**.
+
+---
+
 # Factura por WhatsApp — Blog
 
 An Astro 7 blog with MDX support for the Factura por WhatsApp project.
